@@ -1,0 +1,38 @@
+{
+    "name": "idle-game",
+    "version": "0.0.1",
+    "private": true,
+    "author": "Simon Bihoreau",
+    "dependencies": {
+        "pretty-format": "^25.1.0",
+        "react": "^16.8.4",
+        "react-dom": "^16.13.1"
+    },
+    "scripts": {
+        "start": "npm run parcel:main",
+        "ts:watch": "tsc --watch --noEmit",
+        "old:start": "PORT=1234 react-app-rewired start --scripts-version react-scripts-ts",
+        "build": "rm -r build/* || true && react-app-rewired build --scripts-version react-scripts-ts",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "admin:start": "ADMIN=true PORT=1235 react-app-rewired start --scripts-version react-scripts-ts",
+        "admin:build": "rm -r build/* || true && ADMIN=true react-app-rewired build --scripts-version react-scripts-ts",
+        "test:debug": "react-app-rewired --inspect-brk test --scripts-version react-scripts-ts --runInBand --env=jsdom",
+        "eject": "react-scripts-ts eject",
+        "parcel:main": "parcel index.html --port 1234",
+        "parcel:admin": "parcel src/app_admin/index.html --port 1235",
+        "setup:user": "ts-node --project scripts/tsconfig.json scripts/setupFirstUser.ts",
+        "analyze": "source-map-explorer build/static/js/index.*",
+        "svgr": "svgr",
+        "prettier": "prettier --write './src/**/*.{tsx,ts}'"
+    },
+    "devDependencies": {
+        "@types/node": "^12.12.14",
+        "@types/react": "^16.8.17",
+        "@types/react-dom": "^16.9.8",
+        "parcel-bundler": "^1.12.4",
+        "react-scripts-ts": "^2.17.0",
+        "tslint": "^6.1.3",
+        "typescript": "^3.9.9"
+    }
+}
