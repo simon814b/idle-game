@@ -1,29 +1,31 @@
-import { ExplorationBar } from "./ExplorationBar"
 import * as React from 'react'
-import { useInterval } from "./useInterval"
+import { ExplorationBar } from './ExplorationBar'
 
-const Zone1 = (props) => {
-    const [progression, setProgression] = React.useState<number | undefined>(undefined)
+const Zone = (props) => {
+    const [progression, setProgression] =
+        React.useState<number | undefined>(undefined)
+    const [timedProgression, setTimedProgression] = React.useState(0)
+    const [clickedProgression, setClickedProgression] = React.useState(0)
     const [isExploring, setIsExploring] = React.useState(false)
     let interval
 
     React.useEffect(() => {
         if (isExploring) {
             interval = setInterval(() => {
-                if (progression === undefined) return
-                if (progression + props.progressionPerSecond >= 100) {
-                     setProgression(100)
-                     endExploration()
-                }
-                else setProgression(progression + props.progressionPerSecond)
+                setTimedProgression(
+                    timedProgression + props.progressionPerSecond
+                )
             }, 1000)
         }
-        else if (!isExploring && progression !== 0) {
-            clearInterval(interval);
-        }
         return () => clearInterval(interval)
-    }, [isExploring, progression])
-    
+    }, [isExploring, timedProgression])
+
+    React.useEffect(() => {
+        if (timedProgression + clickedProgression >= 100) {
+            setProgression(100)
+            endExploration()
+        } else setProgression(timedProgression + clickedProgression)
+    }, [timedProgression, clickedProgression])
 
     const beginExploration = () => {
         setIsExploring(true)
@@ -32,23 +34,35 @@ const Zone1 = (props) => {
 
     const endExploration = () => {
         clearInterval(interval)
+        setTimedProgression(0)
+        setClickedProgression(0)
         setProgression(undefined)
         setIsExploring(false)
-        props.gainGold()
+        props.gainReward()
+        props.automated && beginExploration()
     }
 
     return (
-        <div style={{display: 'flex', justifyContent: 'space-between'}} >
-            <span>Zone 1 : La plage</span>
-            <ExplorationBar progression={progression ?? 0} />
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span>
+                Zone {props.zoneNumber} : {props.zoneName}
+            </span>
+            <ExplorationBar progression={progression} color={props.color} />
             <div>
-              {isExploring && (<button onClick={() => setProgression(progression + 1)}>Click</button>)}
-                <button disabled={progression !== undefined} onClick={beginExploration}>
-                   Begin Exploration
+                <button
+                    disabled={!isExploring}
+                    onClick={() =>
+                        setClickedProgression(clickedProgression + 1)
+                    }
+                >
+                    Fouiller
+                </button>
+                <button disabled={isExploring} onClick={beginExploration}>
+                    Commencer l'exploration
                 </button>
             </div>
         </div>
     )
 }
 
-export { Zone1 }
+export { Zone }
